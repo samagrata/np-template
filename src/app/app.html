@@ -1,0 +1,49 @@
+<header>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-black bg-gradient py-3 border-bottom border-bottom-1 border-light-subtle">
+		<div class="container-fluid">
+			<span class="ps-4">
+				<a class="navbar-brand fw-semibold text-info" routerLink="/">
+					Organization Name
+				</a>
+			</span>
+			
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          @if(!evars.dashboardPath) {
+            <li class="nav-item">	
+              <a class="nav-link" routerLink="about">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="awards">Awards & Recognitions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="donate">Donate</a>
+            </li>
+          } @else {
+            <li class="nav-item">
+              <button (click)="logout()" type="button" class="nav-link">Logout</button>
+            </li>
+          }
+        </ul>
+      </div>
+		</div>
+	</nav>
+</header>
+
+<main class="main">
+	<router-outlet />
+
+	<div id="footer" class="section">
+		<footer-component />
+	</div>
+</main>
+
+<footer class="bg-secondary text-danger-emphasis py-1">
+	<div class="container p-1">
+		<p>Base application provided by <a class="text-danger-emphasis fw-bold link-offset-2 link-underline-danger-emphasis" href="https://github.com/samagrata">Samagrata</a></p>
+	</div>
+</footer>

@@ -1,0 +1,41 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Custom Styles */
+
+#banner {
+  max-width:100%;
+  height:auto;
+}
+
+#highlights {
+  max-width: 100%;
+}
+
+.highlight-item {
+  position: relative;
+  height: 420px;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  overflow: hidden;
+}
+
+.highlight-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+
+#stories .carousel-item,
+#achievements .carousel-item {
+  height: 400px;
+  background-size: cover;
+  background-position: center;
+}
+
+.input-group-append {
+  cursor: pointer;
+}

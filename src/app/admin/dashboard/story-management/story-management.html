@@ -1,0 +1,656 @@
+<div *ngIf="obs$ | async" class="container" id="topElement">
+	<h2 class="mb-4">Story Management <small class="text-muted fs-5">- Content & Comments</small></h2>
+	
+	<div class="card">
+		<div class="card-body">
+			<dynamic-table
+        (dataEmitter)="handleDataEmit($event)"
+				[config]="tableConfig"
+				[data]="tableData"
+				[columns]="tableColumns"
+				[editableFields]="editableFields"
+				[itemsPerPage]="10"
+				[cardFragRef]="cardFragment">
+			</dynamic-table>
+		</div>
+	</div>
+</div>
+
+<!-- Templates -->
+<ng-template #cardFragment let-itemID="itemSN">
+	<ul class="nav nav-underline" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="fub-tab-link" data-bs-toggle="tab" data-bs-target="#fub-tab-pane" type="button"
+				role="tab" aria-controls="fub-tab-pane" aria-selected="true">
+				Paragraphs
+			</button>
+		</li>
+
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="fib-tab-link" data-bs-toggle="tab" data-bs-target="#fib-tab-pane" type="button"
+				role="tab" aria-controls="fib-tab-pane" aria-selected="true">
+				Carousel Images
+			</button>
+		</li>
+
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="fcb-tab-link" data-bs-toggle="tab" data-bs-target="#fcb-tab-pane" type="button"
+				role="tab" aria-controls="fcb-tab-pane" aria-selected="true">
+				Carousels (Similar Cases)
+			</button>
+		</li>
+
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="ffrb-tab-link" data-bs-toggle="tab" data-bs-target="#ffrb-tab-pane" type="button"
+				role="tab" aria-controls="ffrb-tab-pane" aria-selected="true">
+				Funds Received
+			</button>
+		</li>
+
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="ffub-tab-link" data-bs-toggle="tab" data-bs-target="#ffub-tab-pane" type="button"
+				role="tab" aria-controls="ffub-tab-pane" aria-selected="true">
+				Funds Used
+			</button>
+		</li>
+
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="frb-tab-link" data-bs-toggle="tab" data-bs-target="#frb-tab-pane" type="button" role="tab"
+				aria-controls="frb-tab-pane" aria-selected="false">
+				Comments
+			</button>
+		</li>
+	</ul>
+	
+	<div class="tab-content mt-3" id="myTabContent">
+		<div class="tab-pane fade show active" id="fub-tab-pane" role="tabpanel" aria-labelledby="fub-tab" tabindex="0">
+			<div class="mb-4">
+				<div class="container">
+					@for (item of storyData[itemID-1].paragraphs; track $index; let i = $index) {
+						<div *ngIf="item" class="row justify-content-start">
+							<div class="col-1">{{(i+1)}}</div>
+							@if (tableData[itemID-1]['editable']) {
+								<div class="col-10">{{item}}</div>
+								<div class="col-1">
+									<span data-bs-toggle="modal" (click)="setCurrentItem({type: this.itemEnum.Para, id: i, item: { sn: (itemID - 1) }})" data-bs-target="#smConfirmModal" title="Delete" role="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+											viewBox="0 0 16 16">
+											<path
+												d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+										</svg>
+									</span>
+								</div>
+							} @else {
+								<div class="col-11">{{item}}</div>
+							}
+						</div>
+					}
+
+					@if (tableData[itemID-1]['editable']) {
+						<form [formGroup]="storyEditForm">
+							<div formArrayName="editParas" class="pt-2">
+								<div *ngFor="let item of editParas.controls; let i = index" class="row justify-content-start">
+									<div class="col-1 text-primary-emphasis">{{(i+1)}}</div>
+									<div class="col-10">
+										<textarea [formControlName]="i" [id]="'para_in_' + (i+1)" style="min-width: 100%"></textarea>
+									</div>
+									<div class="col-1">
+										<button type="button" (click)="removeEditParaIn(i)" class="btn btn-primary btn-sm">Remove</button>
+									</div>
+								</div>
+							</div>
+							<button type="button" (click)="addEditParaIn()" class="btn btn-primary">Add</button>
+						</form>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="fib-tab-pane" role="tabpanel" aria-labelledby="fib-tab" tabindex="0">
+			<div class="mb-4">
+				<div class="container">
+					@for (item of storyData[itemID-1].carouselImages; track $index; let i = $index) {
+						<div *ngIf="item" class="row justify-content-start">
+							<div class="col-1">{{(i+1)}}</div>
+							@if (tableData[itemID-1]['editable']) {
+								<div class="col-10">{{item}}</div>
+								<div class="col-1">
+									<span data-bs-toggle="modal" (click)="setCurrentItem({type: this.itemEnum.CImg, id: i, item: { sn: (itemID - 1) }})" data-bs-target="#smConfirmModal" title="Delete" role="button">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+											viewBox="0 0 16 16">
+											<path
+												d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+										</svg>
+									</span>
+								</div>
+							} @else {
+								<div class="col-11">{{item}}</div>
+							}
+						</div>
+					}
+
+					@if (tableData[itemID-1]['editable']) {
+						<form [formGroup]="storyEditForm">
+							<div formArrayName="editCarouselImages" class="pt-2">
+								<div *ngFor="let item of editCarouselImages.controls; let i = index" class="row justify-content-start">
+									<div class="col-1 text-primary-emphasis">{{(i+1)}}</div>
+									<div class="col-10">
+										<input [formControlName]="i" [id]="'cimg_in_' + (i+1)" style="min-width: 100%;" />
+									</div>
+									<div class="col-1">
+										<button type="button" (click)="removeEditCImgIn(i)" class="btn btn-primary btn-sm">Remove</button>
+									</div>
+								</div>
+							</div>
+							<button type="button" (click)="addEditCImgIn()" class="btn btn-primary">Add</button>
+						</form>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="fcb-tab-pane" role="tabpanel" aria-labelledby="fcb-tab" tabindex="0">
+			<div class="mb-4">
+				<div class="container">
+					<div class="row table-header py-1 fw-bold border-bottom border-dark">
+						<div class="col-1">#</div>
+						<div class="col-3">Title</div>
+						<div [class]="(tableData[itemID-1]['editable']) ? 'col-4' : 'col-5'">Text</div>
+						<div class="col-2">Image</div>
+						@if (tableData[itemID-1]['editable']) {
+							<div class="col-2"></div>
+						}
+					</div>
+
+					@for (item of storyData[itemID-1].carousels; track $index; let i = $index) {
+						<div *ngIf="item" class="row pt-1">
+							<div class="col-1 text-primary-emphasis">{{(i + 1)}}</div>
+							<div class="col-3">{{item.title}}</div>
+							<div [class]="(tableData[itemID-1]['editable']) ? 'col-4' : 'col-5'">{{item.text}}</div>
+							<div class="col-2">{{item.img}}</div>
+
+							@if (tableData[itemID-1]['editable']) {
+								<div data-bs-toggle="modal" (click)="setCurrentItem({type: this.itemEnum.Cr, id: i, item: { sn: (itemID - 1) }})" data-bs-target="#smConfirmModal" class="col-2 text-end" title="Delete" role="button">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+										viewBox="0 0 16 16">
+										<path
+											d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+									</svg>
+								</div>
+							}
+						</div>
+					}
+
+					@if (tableData[itemID-1]['editable']) {
+						<form [formGroup]="storyEditForm">
+							<div formArrayName="editCarousels" class="pt-2">
+								<div *ngFor="let item of editCarousels.controls; let i = index" class="row">
+									<div class="col-1 text-primary-emphasis">{{(i + 1)}}</div>
+                  <div class="col-9" [formGroupName]="i">
+                    <div class="row">
+                      <div class="col-4">
+                        <input formControlName="title" [id]="'title_in_' + (i+1)" style="min-width: 100%;" />
+                      </div>
+                      <div class="col-5">
+                        <input formControlName="text" [id]="'text_in_' + (i+1)" style="min-width: 100%;" />
+                      </div>
+                      <div class="col-3">
+                        <input formControlName="img" [id]="'img_in_' + (i+1)" style="max-width: 100%;" />
+                      </div>
+                    </div>
+                  </div>
+									<div class="col-2 text-end">
+										<button type="button" (click)="removeEditCrIn(i)" class="btn btn-primary btn-sm">Remove</button>
+									</div>
+								</div>
+							</div>
+							<button type="button" (click)="addEditCrIn()" class="btn btn-primary">Add</button>
+						</form>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="ffrb-tab-pane" role="tabpanel" aria-labelledby="ffrb-tab" tabindex="0">
+			<div class="mb-4">
+				<div class="container">
+					<div class="row py-1">
+						<div class="col-2 fw-bold">Fund Goal:</div>
+						@if (tableData[itemID-1]['editable']) {
+							<div class="col-2">	
+								<form [formGroup]="storyEditForm">
+									<input formControlName="editFundGoal" [(ngModel)]="storyData[itemID-1].fundGoal" type="number" id="sefg_in" />
+								</form>
+							</div>
+						} @else {
+							<div class="col-2">{{ storyData[itemID-1].fundGoal }}</div>
+						}
+					</div>
+
+					<div class="row py-2">
+						<div class="col-2 py-2 fw-bold">Fund Received:</div>
+					</div>
+
+					<div class="row py-1">
+						<div class="col-12">
+							<div class="row table-header py-1 pb-2 fw-bold">
+								<div class="col-1 fw-bold">#</div>
+								<div class="col-2 fw-bold">Date</div>
+								<div class="col-3 fw-bold">Reference Number</div>
+								<div class="col-3 fw-bold">Remark</div>
+								<div class="col-2 fw-bold">Amount</div>
+							</div>
+
+							@for (item of storyData[itemID-1].fundsReceived; track $index; let i = $index) {
+								<div *ngIf="item" class="row py-1">
+									<div class="col-1">{{ i + 1 }}</div>
+									<div class="col-2">{{ item.date | date:'mediumDate' }}</div>
+									<div class="col-3">{{ item.referenceNumber }}</div>
+									<div class="col-3">{{ item.remark }}</div>
+									<div class="col-2">{{ item.amount }}</div>
+
+									@if (tableData[itemID-1]['editable']) {
+										<div data-bs-toggle="modal" (click)="setCurrentItem({type: this.itemEnum.Rec, id: i, item: { sn: (itemID - 1) }})" data-bs-target="#smConfirmModal" class="col-1 text-end" title="Delete" role="button">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+												viewBox="0 0 16 16">
+												<path
+													d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+											</svg>
+										</div>
+									}
+								</div>
+							}
+
+							@if (tableData[itemID-1]['editable']) {
+								<form [formGroup]="storyEditForm">
+									<div formArrayName="editFundReceived" class="pt-2">
+										<div *ngFor="let item of editFundReceived.controls; let i = index" class="row">
+											<div class="col-1 text-primary-emphasis">{{(i + 1)}}</div>
+                      <div class="col-10" [formGroupName]="i">
+                        <div class="row">
+                          <div class="col-2">
+                            <input type="date" formControlName="date" [id]="'date_in_' + (i+1)" style="min-width: 60%; max-width: 120%;" />
+                          </div>
+                          <div class="col-4" style="padding-left: 2.5rem !important;">
+                            <input formControlName="referenceNumber" [id]="'ref_num_in_' + (i+1)" style="max-width: 85%;" />
+                          </div>
+                          <div class="col-3">
+                            <input formControlName="remark" [id]="'remark_in_' + (i+1)" style="max-width: 100%;" />
+                          </div>
+                          <div class="col-2 ps-5">
+                            <input formControlName="amount" [id]="'amount_in_' + (i+1)" type="number" style="min-width: 60%; max-width: 130%;" />
+                          </div>
+                        </div>
+                      </div>
+											<div class="col-1 text-end">
+												<button type="button" (click)="removeEditDonIn(i)" class="btn btn-primary btn-sm">Remove</button>
+											</div>
+										</div>
+									</div>
+									<button type="button" (click)="addEditDonIn()" class="btn btn-primary">Add</button>
+								</form>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="ffub-tab-pane" role="tabpanel" aria-labelledby="ffub-tab" tabindex="0">
+			<div class="mb-4">
+				<div class="container">
+					<div class="row">
+						<div class="col-2 py-2 fw-bold">Fund Usage:</div>
+					</div>
+
+					<div class="row py-1">
+						<div class="col-12">
+							<div class="row table-header py-1 pb-2 fw-bold">
+								<div class="col-1 fw-bold">#</div>
+								<div class="col-5 fw-bold">Expense</div>
+								<div class="col-4 fw-bold">Amount</div>
+							</div>
+
+							@for (item of storyData[itemID-1].fundsUsed; track $index; let i = $index) {
+								<div *ngIf="item" class="row py-1">
+									<div class="col-1">{{ i + 1 }}</div>
+									<div class="col-5">{{ item.name }}</div>
+									<div class="col-4">{{ item.amount }}</div>
+
+									@if (tableData[itemID-1]['editable']) {
+										<div data-bs-toggle="modal" (click)="setCurrentItem({type: this.itemEnum.Expn, id: i, item: { sn: (itemID - 1) }})" data-bs-target="#smConfirmModal" class="col-2 text-end" title="Delete" role="button">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+												viewBox="0 0 16 16">
+												<path
+													d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+											</svg>
+										</div>
+									}
+								</div>
+							}
+
+							@if (tableData[itemID-1]['editable']) {
+								<form [formGroup]="storyEditForm">
+									<div formArrayName="editFundUsed" class="pt-2">
+										<div *ngFor="let item of editFundUsed.controls; let i = index" class="row">
+											<div class="col-1 text-primary-emphasis">{{(i + 1)}}</div>
+                      <div class="col-9" [formGroupName]="i">
+                        <div class="row">
+                          <div class="col-6">
+                            <input formControlName="name" [id]="'name_in_' + (i+1)" style="min-width: 100%;" />
+                          </div>
+                          <div class="col-5 ps-5">
+                            <input formControlName="amount" [id]="'amount_in_' + (i+1)" type="number" style="max-width: 50%;" />
+                          </div>
+                        </div>
+                      </div>
+											<div class="col-2 text-end">
+												<button type="button" (click)="removeEditExpnIn(i)" class="btn btn-primary btn-sm">Remove</button>
+											</div>
+										</div>
+									</div>
+									<button type="button" (click)="addEditExpnIn()" class="btn btn-primary">Add</button>
+								</form>
+							}
+						</div>
+					</div>
+
+          <div class="row py-1 pt-3">
+						<div class="col fw-bold">Bank Statement SS:</div>
+					</div>
+
+					<div class="row py-1 pt-2">
+						@if (tableData[itemID-1]['editable']) {
+              <div class="col">
+                <div class="row py-1">
+                  <div class="col-3">
+                    <label for="edit_ss_file" class="py-1">Replace current image</label>
+                  </div>
+
+                  <div class="col-5">
+                    <input type="file" id="edit_ss_file" (change)="onFileSelected($event)" class="form-control border border-primary-subtle" style="max-width: fit-content;">
+                  </div>
+                </div>
+                
+                <div class="row py-1 pt-2">
+                  <div class="col">
+                    <a [href]="b64ToImage(itemID-1)" target="_blank" rel="noreferrer noopener">
+                      <img [src]="b64ToImage(itemID-1)" alt="screenshot">
+                    </a>
+                  </div>
+                </div>
+              </div>
+						} @else {
+							<div class="col">
+                <div>
+                  <a [href]="b64ToImage(itemID-1)" target="_blank" rel="noreferrer noopener">
+                    <img [src]="b64ToImage(itemID-1)" alt="screenshot">
+                  </a>
+                </div>
+              </div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="tab-pane fade" id="frb-tab-pane" role="tabpanel" aria-labelledby="frb-tab" tabindex="0">
+			<div class="mb-4">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Name</th>
+							<th scope="col">Email</th>
+							<th scope="col">Comment Text</th>
+							<th scope="col">Time</th>
+							<th scope="col">Approve</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (item of storyData[itemID-1].comments; track $index; let i = $index) {
+							<tr>
+								<th scope="row">{{(i + 1)}}</th>
+								<td>{{item.name}}</td>
+								<td>{{item.email}}</td>
+								<td>{{item.text}}</td>
+								<td>{{item.createdAt | date:'long' }}</td>
+								<td>
+									<div class="form-check form-switch">
+										<input [ngModel]="item.approved" (change)="onCommentApprovalChange(storyData[itemID-1].id, item)" class="form-check-input border border-primary" type="checkbox" role="switch" id="switchCheckDefault">
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #formFragment>
+  <div class="d-flex flex-row justify-content-center align-items-center">
+    <div class="p-1">
+      <div *ngIf="notifications.loadingMsg" class="alert alert-info p-2" role="alert">
+        {{ notifications.loadingMsg }}
+      </div>
+      <div *ngIf="notifications.successMsg" class="alert alert-success p-2" role="alert">
+        {{ notifications.successMsg }}
+      </div>
+      <div *ngIf="notifications.errorMsg" class="alert alert-danger p-2" role="alert">
+        {{ notifications.errorMsg }}
+      </div>
+    </div>
+  </div>
+
+	<form [formGroup]="storyForm" (ngSubmit)="onSubmit()">
+    <div class="row mb-1 align-items-center">
+			<label for="story_cn" class="col-sm-4 col-form-label">For Case</label>
+			<div class="col-sm-8">
+				<select formControlName="caseNumber" id="story_cn" class="form-select border border-primary-subtle">
+					<option disabled [ngValue]="null">Select</option>
+					<option *ngFor="let opt of caseNoOptions" [ngValue]="opt">{{ opt }}</option>
+				</select>
+        <div *ngIf="storyForm.get('caseNumber')?.invalid && storyForm.get('caseNumber')?.touched" class="text-danger">
+          Case number is required
+        </div>
+			</div>
+		</div>
+
+		<div class="row mb-1">
+			<label for="story_title" class="col-sm-4 col-form-label">Story Title</label>
+			<div class="col-sm-8">
+				<input id="story_title" type="text" formControlName="title" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-1">
+			<label for="fund_goal" class="col-sm-4 col-form-label">Fund Goal</label>
+			<div class="col-sm-8">
+				<input id="fund_goal" type="text" formControlName="fundGoal" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-1">
+			<label for="ss_file" class="col-sm-4 col-form-label">Bank Ledger SS</label>
+			<div class="col-sm-8">
+        <input type="file" id="ss_file" (change)="onFileSelected($event)" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<hr />
+		<label class="mb-2"><u>Paragraphs:</u></label>
+
+		<div formArrayName="paragraphs" class="row mb-1">
+			<div *ngFor="let item of paragraphs.controls; let i = index" class="row mb-1">
+				<div class="row mb-2">
+					<label [for]="'nSPara-' + (i + 1)" class="col-sm-3 col-form-label">{{ 'Para ' + (i + 1) }}</label>
+					<div class="col-sm-8">
+						<textarea [id]="'nSPara-' + (i + 1)" [formControlName]="i" class="form-control border border-primary-subtle"></textarea>
+					</div>
+					<div class="col-sm-1">
+						<span (click)="removeParagraph(i)" title="Remove Para" role="button">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+								viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button type="button" (click)="addParagraph()" class="btn btn-primary">
+			Add paragraph
+		</button>
+
+		<hr />
+		<label class="mb-2"><u>Carousel images:</u></label>
+
+		<div formArrayName="carouselImages" class="row mb-1">
+			<div *ngFor="let item of carouselImages.controls; let i = index" class="row mb-1">
+				<div class="row mb-2">
+					<label [for]="'nSImg-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Carousel Image ' + (i + 1) }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSImg-' + (i + 1)" [formControlName]="i" class="form-control border border-primary-subtle" style="min-width: max-content;">
+					</div>
+					<div class="col-sm-2">
+						<span (click)="removeCarouselImg(i)" title="Remove Image" role="button">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+								viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button type="button" (click)="addCarouselImg()" class="btn btn-primary">
+			Add carousel image
+		</button>
+
+		<hr />
+		<label class="mb-2"><u>Carousels (similar cases):</u></label>
+
+		<div formArrayName="carousels" class="row mb-1">
+			<div *ngFor="let item of carousels.controls; let i = index" class="row mb-1">
+				<div [formGroupName]="i" class="row mb-2">
+					<label [for]="'nSCTitle-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Carousel ' + (i + 1) + ' Title' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCTitle-' + (i + 1)" formControlName="title" class="form-control border border-primary-subtle">
+					</div>
+
+					<div class="col-sm-2">
+						<span (click)="removeCarousel(i)" title="Remove Image" role="button">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+								viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</span>
+					</div>
+
+					<label [for]="'nSCText-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Carousel ' + (i + 1) + ' Text' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCText-' + (i + 1)" formControlName="text" class="form-control border border-primary-subtle">
+					</div>
+
+					<label [for]="'nSCImg-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Carousel ' + (i + 1) + ' Image' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCImg-' + (i + 1)" formControlName="img" class="form-control border border-primary-subtle">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button type="button" (click)="addCarousel()" class="btn btn-primary">
+			Add carousel
+		</button>
+
+		<hr />
+		<label class="mb-2"><u>Funds Received:</u></label>
+
+		<div formArrayName="fundsReceived" class="row mb-1">
+			<div *ngFor="let item of fundsReceived.controls; let i = index" class="row mb-1">
+				<div [formGroupName]="i" class="row mb-2">
+					<label [for]="'nSCDate-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Date' }}</label>
+					<div class="col-sm-6">
+						<input type="date" [id]="'nSCDate-' + (i + 1)" formControlName="date" class="form-control border border-primary-subtle">
+					</div>
+
+					<div class="col-sm-2">
+						<span (click)="removeFundReceived(i)" title="Remove" role="button">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+								viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</span>
+					</div>
+
+					<label [for]="'nSCRefNum-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Reference Number' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCRefNum-' + (i + 1)" formControlName="referenceNumber" class="form-control border border-primary-subtle">
+					</div>
+
+					<label [for]="'nSCRem-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Remark/Note' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCRem-' + (i + 1)" formControlName="remark" class="form-control border border-primary-subtle">
+					</div>
+
+					<label [for]="'nSCAmt-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Amount' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCAmt-' + (i + 1)" formControlName="amount" class="form-control border border-primary-subtle">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button type="button" (click)="addFundReceived()" class="btn btn-primary">
+			Add fund received
+		</button>
+
+		<hr />
+		<label class="mb-2"><u>Funds Used:</u></label>
+
+		<div formArrayName="fundsUsed" class="row mb-1">
+			<div *ngFor="let item of fundsUsed.controls; let i = index" class="row mb-1">
+				<div [formGroupName]="i" class="row mb-2">
+					<label [for]="'nSCNm-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Expense' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCNm-' + (i + 1)" formControlName="name" class="form-control border border-primary-subtle">
+					</div>
+
+					<div class="col-sm-2">
+						<span (click)="removeFundUsed(i)" title="Remove" role="button">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+								viewBox="0 0 16 16">
+								<path
+									d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+							</svg>
+						</span>
+					</div>
+
+					<label [for]="'nSCAmt-' + (i + 1)" class="col-sm-4 col-form-label">{{ 'Amount' }}</label>
+					<div class="col-sm-6">
+						<input type="text" [id]="'nSCAmt-' + (i + 1)" formControlName="amount" class="form-control border border-primary-subtle">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<button type="button" (click)="addFundUsed()" class="btn btn-primary">
+			Add fund used
+		</button>
+	</form>
+</ng-template>
+
+<form-modal [saveFunction]="onSubmit" class="form_modal">
+  <ng-container [ngTemplateOutlet]="formFragment" />
+</form-modal>
+
+<confirm-modal [deleteEntryFunction]="removeEntry" [citem]="confirmItem" [id]="'smConfirmModal'" />

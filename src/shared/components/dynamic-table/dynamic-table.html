@@ -1,0 +1,198 @@
+<div class="container-fluid py-4 shadow bg-light">
+	<div class="mb-3 d-flex justify-content-between align-items-center">
+		<div *ngIf="config.editable" class="input-group w-50">
+			<button type="button" data-bs-toggle="modal" data-bs-target="#formModal" class="btn btn-primary">New Entry</button>
+		</div>
+
+		<div class="input-group w-50">
+			<input type="text" class="form-control border border-primary-subtle" placeholder="Filter table..."
+				[ngModel]="filterText" (ngModelChange)="onFilter($event)" aria-label="Filter table">
+		</div>
+	</div>
+
+  <div class="dynamic-table-container">
+    <div class="table-responsive">
+      <table class="table table-hover table-striped" style="width:100%">
+        <thead class="table-dark">
+          <tr>
+            <th *ngFor="let col of columns" [class.pe-auto]="col.sortable" [class.user-select-none]="col.sortable"
+              (click)="col.sortable && onSort(col.key)">
+              {{ col.label }}
+              <span *ngIf="col.sortable">
+                <i [ngClass]="getSortIcon(col.key)"></i>
+              </span>
+            </th>
+            <th></th>
+            <th></th>
+            <th style="width:5%"></th>
+          </tr>
+        </thead>
+        
+        <tbody class="accordion" id="cs_tb_accordion">
+          @for (item of pagedData; track $index; let idx1 = $index) {
+            <tr [attr.data-bs-target]="'#tr_ai' + (idx1 + 1)" class="accordion-item">
+              @for (col of columns; track $index; let idx2 = $index) {
+                <td>
+                  @if (editable && itemDataEditable(item, col) && checkForResourceCN(item, col)) {
+                    @switch (col.type) {
+                      @case ('String') {
+                        <div class="input-group mb-3">
+                          <input type="text" [(ngModel)]="item[col.key]" class="form-control border border-primary-subtle"
+                            [attr.id]="'st_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)">
+                        </div>
+                      }
+                      @case ('Dropdown') {
+                        <ng-container *ngTemplateOutlet="dropdownFragRef; context: { colKey: col.key, selected: item[col.key] }"></ng-container>
+                      }
+                      @case ('Date') {
+                        <div class="input-group mb-3">
+                          <input type="date" [(ngModel)]="item[col.key]" class="form-control border-primary-subtle"
+                            [attr.id]="'dt_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)">
+                        </div>
+                      }
+                      @case ('Number') {
+                        <div class="input-group mb-3">
+                          <input type="number" [(ngModel)]="item[col.key]" class="form-control border border-primary-subtle"
+                            [attr.id]="'nm_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)">
+                        </div>
+                      }
+                      @case ('Text') {
+                        <div class="form-floating">
+                          <textarea class="form-control border border-primary-subtle p-2" [(ngModel)]="item[col.key]" [attr.id]="'tx_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)"></textarea>
+                        </div>
+                      }
+                      @case ('Boolean') {
+                        <!-- <div class="form-check">
+                          <input [(ngModel)]="item[col.key]" [attr.id]="'tx_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)" class="form-check-input border border-primary p-2" type="checkbox" value="">
+                        </div> -->
+                        <div class="form-check form-switch">
+                          <input [(ngModel)]="item[col.key]" [attr.id]="'tx_in_' + col.key + '_' + (idx1 + 1) + '_' + (idx2 + 1)" class="form-check-input border border-primary p-2" type="checkbox" role="switch">
+                        </div>
+                      }
+                      @case ('File') {
+                        <div class="input-group mb-3">
+                          <input type="file" class="form-control border border-primary-subtle" [attr.id]="'fl_in_' + '_' + (idx1 + 1) + '_' + (idx2 + 1)">
+                        </div>
+                      }
+                      @default {
+                        {{ item[col.key] }}
+                      }
+                    }
+                  } @else {
+                    @if (col.type == 'Date') {
+                      {{ item[col.key] == '' ? '' : (newDate(item[col.key]) | date) }}
+                    }
+                    @else if (item['paths'] && getObjKeys(item['paths']).includes(col.key)) {
+                      <a href="javascript:void(0)" (click)="navigateTo(item['paths'][col.key])">{{ item[col.key] }}</a>
+                    } @else {
+                      {{ item[col.key] }}
+                    }
+                  }
+                </td>
+              }
+
+              @if (showEdit && !itemEditable(item)) {
+                <td (click)="editModeOn(item)" title="Edit" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                  </svg>
+                </td>
+              } 
+              @else if (editable && itemEditable(item)) {
+                <td (click)="saveUpdates(item, idx1)" title="Save" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-check2-square" viewBox="0 0 16 16">
+                    <path
+                      d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z" />
+                    <path
+                      d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0" />
+                  </svg>
+                </td>
+              }	
+              @else {
+                <td></td>
+              }
+
+              @if (showEdit && !itemEditable(item)) {
+                <td data-bs-toggle="modal" (click)="setConfirmItem(item)" data-bs-target="#confirmModal" title="Delete" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                  </svg>
+                </td>
+              }
+              @else if (editable && itemEditable(item)) {
+                <td (click)="editModeOff(item)" title="Cancel" role="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                    <path
+                      d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                  </svg>
+                </td>
+              }
+              @else {
+                <td></td>
+              }
+
+              <td *ngIf="config.expandable">
+                <h2 class="accordion-header" style="max-width: min-content;">
+                  <button class="accordion-button collapsed py-1 bg-secondary-subtle" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#tr_ai' + (idx1 + 1)" aria-expanded="true" aria-controls="collapseOne" style="max-width: min-content;"></button>
+                </h2>
+              </td>
+            </tr>
+            
+            <tr class="accordion-collapse collapse" [attr.id]="'tr_ai' + (idx1 + 1)" data-bs-parent="#cs_tb_accordion">
+              <td colspan="11" class="accordion-body">
+                <div class="card card-body border border-dark bg-secondary-subtle">
+                  <ng-container *ngTemplateOutlet="cardFragRef; context: { itemSN: item['sn'], editable: itemEditable(item), saveChanges: saveChanges }" />
+                </div>
+              </td>
+            </tr>
+          }
+
+          <tr *ngIf="pagedData.length === 0">
+            <td [attr.colspan]="columns.length" class="text-center text-muted">
+              No data available.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+      <div class="small text-muted">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+        {{ math.min(currentPage * itemsPerPage, sortedFilteredData.length) }} of
+        {{ sortedFilteredData.length }} entries
+      </div>
+      <nav *ngIf="totalPages > 1" aria-label="Table pagination">
+        <ul class="pagination mb-0 shadow-sm">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" *ngFor="let page of pageNumbers" [class.active]="currentPage === page">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(page)">
+              {{ page }}
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<confirm-modal [deleteEntryFunction]="deleteEntry" [citem]="confirmItem" />

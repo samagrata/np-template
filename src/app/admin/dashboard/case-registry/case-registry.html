@@ -1,0 +1,132 @@
+<div *ngIf="obs$ | async" class="container">
+	<h2 class="mb-4">Case Registry <small class="text-muted fs-5">- Manage cases</small></h2>
+	
+	<div class="card">
+		<div class="card-body">
+			<dynamic-table
+        (dataEmitter)="handleDataEmit($event, cEnum.DT)" 
+				[config]="tableConfig"
+				[data]="tableData"
+				[columns]="tableColumns"
+				[itemsPerPage]="10"
+				[editableFields]="['closingDate', 'reports']"
+				[cardFragRef]="cardFragment">
+		</dynamic-table>
+		</div>
+	</div>
+</div>
+
+<!-- Templates -->
+<ng-template #cardFragment let-itemSN="itemSN" let-editable="editable" let-saveChanges="saveChanges">
+	<ul class="nav nav-underline" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="fub-tab" data-bs-toggle="tab" data-bs-target="#fub-tab-pane" type="button"
+				role="tab" aria-controls="fub-tab-pane" aria-selected="true">
+				Subject Details
+			</button>
+		</li>
+	</ul>
+	
+	<div class="tab-content mt-3" id="myTabContent">
+		<div class="tab-pane fade show active" id="fub-tab-pane" role="tabpanel" aria-labelledby="fub-tab" tabindex="0">
+			<div class="mb-4">
+				<table class="table">
+					<tbody>
+            @for (item of cases; track $index; let i = $index) {
+              @if (itemSN === (i + 1)) {
+                <subject-component *ngIf="item" (dataEmitter)="handleDataEmit($event, cEnum.CS)" [sub]="item.subject" [saveChanges]="saveChanges" [editable]="editable" [index]="i" />
+              }
+            }
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #formFragment>
+  <div class="d-flex flex-row justify-content-center align-items-center">
+    <div class="p-1">
+      <div *ngIf="notifications.loadingMsg" class="alert alert-info p-2" role="alert">
+        {{ notifications.loadingMsg }}
+      </div>
+      <div *ngIf="notifications.successMsg" class="alert alert-success p-2" role="alert">
+        {{ notifications.successMsg }}
+      </div>
+      <div *ngIf="notifications.errorMsg" class="alert alert-danger p-2" role="alert">
+        {{ notifications.errorMsg }}
+      </div>
+    </div>
+  </div>
+
+	<form #caseForm="ngForm" class="needs-validation text-black">
+		<div class="row mb-2 align-items-center">
+			<label for="inputCaseNumber" class="col-sm-4 col-form-label">Case Number</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.caseNumber" name="caseNumber" id="inputCaseNumber" class="form-control border border-primary-subtle" placeholder="e.g. AA111">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputName" class="col-sm-4 col-form-label">Subject Name</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.name" name="name" id="inputName" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputNumber" class="col-sm-4 col-form-label">Contact Number</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.contactNumber" name="contactNumber" id="inputNumber" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.email" name="email" id="inputEmail" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputAddress" class="col-sm-4 col-form-label">Address</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.address" name="address" id="inputAddress" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputCity" class="col-sm-4 col-form-label">City</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.city" name="city" id="inputCity" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputState" class="col-sm-4 col-form-label">State/Province</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.state" name="state" id="inputState" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputZip" class="col-sm-4 col-form-label">Zip/Postal Code</label>
+			<div class="col-sm-8">
+				<input type="text" required [(ngModel)]="newItem.subject.zip" name="zip" id="inputZip" class="form-control border border-primary-subtle">
+			</div>
+		</div>
+
+		<div class="row mb-2 align-items-center">
+			<label for="inputFile" class="col-sm-4 col-form-label">Case Files</label>
+			<div class="col-sm-8">
+				<div class="form-floating">
+					<input type="file" name="file" id="inputFile" class="form-control border border-primary-subtle">
+				</div>
+			</div>
+		</div>
+	</form>
+</ng-template>
+
+<form-modal [saveFunction]="onSubmit">
+  <ng-container [ngTemplateOutlet]="formFragment" />
+</form-modal>

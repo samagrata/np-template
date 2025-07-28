@@ -1,0 +1,54 @@
+<!-- Donation Section -->
+<section id="donation" class="py-5">
+	<div class="container">
+		<h1 class="text-center mb-5 display-4 fw-bold text-primary">Support Our Mission</h1>
+		<div class="card shadow-lg mx-auto" style="max-width: 600px; border-radius: 1rem;">
+			<div class="card-header bg-success text-white text-center rounded-top-3">
+				<h3 class="mb-0">Make a Difference Today!</h3>
+			</div>
+			<div class="card-body p-4">
+				<p class="lead text-center mb-4">
+					Your generous contribution helps us continue our vital work in empowering communities and creating
+					sustainable change. Every donation, no matter the size, makes a significant impact.
+				</p>
+				<form>
+					<div class="mb-3">
+						<label for="donationAmount" class="form-label fs-5"><i
+								class="fas fa-dollar-sign me-2 text-success"></i>Donation Amount</label>
+						<input type="number" class="form-control form-control-lg rounded-3" id="donationAmount"
+							placeholder="e.g., 50" min="1" required>
+					</div>
+					<div class="mb-4">
+						<label class="form-label fs-5"><i class="fas fa-hands-helping me-2 text-info"></i>Choose a
+							Pre-set Amount (optional)</label>
+						<div class="d-flex flex-wrap gap-2">
+							<button type="button" class="btn btn-outline-primary rounded-pill"
+								onclick="document.getElementById('donationAmount').value = '25'">₹25</button>
+							<button type="button" class="btn btn-outline-primary rounded-pill"
+								onclick="document.getElementById('donationAmount').value = '50'">₹50</button>
+							<button type="button" class="btn btn-outline-primary rounded-pill"
+								onclick="document.getElementById('donationAmount').value = '100'">₹100</button>
+							<button type="button" class="btn btn-outline-primary rounded-pill"
+								onclick="document.getElementById('donationAmount').value = '250'">₹250</button>
+							<button type="button" class="btn btn-outline-primary rounded-pill"
+								onclick="document.getElementById('donationAmount').value = '500'">₹500</button>
+						</div>
+					</div>
+					<div class="d-grid gap-2">
+						<button type="submit" class="btn btn-success btn-lg rounded-3"><i
+								class="fas fa-heart me-2"></i>Donate Now</button>
+						<div class="text-center text-danger fst-italic mt-2">
+								(This button is a placeholder. In production application, 
+								it should initiate a payment process.)
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="card-footer bg-light text-center text-secondary text-muted rounded-bottom-3">
+				<small>
+					Your information is secure and confidential.
+				</small>
+			</div>
+		</div>
+	</div>
+</section>

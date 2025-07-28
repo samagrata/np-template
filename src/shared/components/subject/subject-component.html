@@ -1,0 +1,91 @@
+<tr>
+	<td class="p-1 fw-medium">Name</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.name" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_name_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.name }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">Email</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.email" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_email_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.email }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">Phone</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.contactNumber" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_contact_number_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.contactNumber }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">Adress</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.address" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_address_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.address }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">City</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.city" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_city_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.city }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">State</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.state" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_state_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.state }}</td>
+  }
+</tr>
+<tr>
+	<td class="p-1 fw-medium">Postal Code</td>
+  @if (editable) {
+    <td class="px-3">
+      <div class="input-group">
+        <input type="text" [(ngModel)]="sub.zip" class="form-control border border-primary-subtle"
+          [attr.id]="'st_in_subject_zip_' + (index + 1)">
+      </div>
+    </td>
+  } @else {
+    <td class="px-3">{{ sub.zip }}</td>
+  }
+</tr>

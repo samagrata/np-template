@@ -1,0 +1,33 @@
+<div class="d-flex align-items-start mb-2">
+	<div id="d-sidebar" class="flex-column d-flex min-vh-100 p-4 text-white bg-dark collapse"
+		aria-orientation="vertical">
+
+		<div class="sidebar-header border-bottom pb-3 mb-3 px-4">
+			<h3 class="fs-5 px-1">
+				<a routerLink="/admin/dashboard" class="text-primary" style="text-decoration: none;">Admin Dashboard</a>
+			</h3>
+		</div>
+
+		<ul class="nav nav-underline flex-column">
+			<li class="nav-item">
+				<a routerLink="visualizations" [ngClass]="vClassActive" class="nav-link text-white" aria-current="page">Visualizations</a>
+			</li>
+			<li class="nav-item">
+				<a routerLink="case-registry" [ngClass]="cClassActive" class="nav-link text-white">Case Registry</a>
+			</li>
+			<li class="nav-item">
+				 <a routerLink="resource-management" [ngClass]="rClassActive" class="nav-link text-white">Resource Management</a>
+			</li>
+			<li class="nav-item">
+				 <a routerLink="story-management" [ngClass]="sClassActive" class="nav-link text-white">Story Management</a>
+			</li>
+			<li class="nav-item">
+				 <a routerLink="volunteer-applications" [ngClass]="aClassActive" class="nav-link text-white">Volunteer Applications</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="container-fluid p-3" id="dashboard-content">
+		<router-outlet />
+	</div>
+</div>

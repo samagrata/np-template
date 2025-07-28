@@ -1,0 +1,42 @@
+<div class="d-flex flex-row justify-content-center align-items-center">
+  <div class="p-1">
+    <div *ngIf="notifications.loadingMsg" class="alert alert-info p-2" role="alert">
+      {{ notifications.loadingMsg }}
+    </div>
+    <div *ngIf="notifications.successMsg" class="alert alert-success p-2" role="alert">
+      {{ notifications.successMsg }}
+    </div>
+    <div *ngIf="notifications.errorMsg" class="alert alert-danger p-2" role="alert">
+      {{ notifications.errorMsg }}
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-row mb-5 justify-content-center align-items-center">
+  <div class="p-1">
+    <div class="card rounded-4 shadow-lg p-4">
+      <h2 class="text-center mb-4 fw-bold">Admin Login</h2>
+      
+      <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm.value)" class="needs-validation text-black">
+        <div class="mb-3">
+          <label for="inputUserName" class="form-label">Username</label>
+          <input #unInput inputAutoFocus required [(ngModel)]="cred.username" type="text" name="username" id="inputUserName" class="form-control rounded-3 border border-primary-subtle">
+        </div>
+        
+        <div class="mb-3">
+          <label for="inputPassword" class="form-label">Password</label>
+          <input type="password" required [(ngModel)]="cred.password" name="password" id="inputPassword" class="form-control rounded-3 border border-primary-subtle">
+        </div>
+        
+        <div class="d-grid gap-2 mb-3">
+          <button type="submit" class="btn btn-primary btn-lg rounded-2">Login</button>
+        </div>
+
+        <hr class="my-4">
+        <div class="text-center">
+          <small><i>Admin account is provided to organization staff</i></small>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

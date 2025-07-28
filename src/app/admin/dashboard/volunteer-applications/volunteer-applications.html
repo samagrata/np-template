@@ -1,0 +1,44 @@
+<div *ngIf="obs$ | async" class="container">
+	<h2 class="mb-4">Volunteer Applications <small class="text-muted fs-5">- View Interests</small></h2>
+	
+	<div *ngIf="Oobject.keys(tableData).length > 0" class="card">
+		<div class="card-body">
+			<dynamic-table
+				[config]="tableConfig"
+				[data]="tableData"
+				[columns]="tableColumns"
+				[editableFields]="[]"
+				[itemsPerPage]="10"
+				[cardFragRef]="cardFragment">
+			</dynamic-table>
+		</div>
+	</div>
+</div>
+
+<!-- Templates -->
+<ng-template #cardFragment let-itemID="itemSN">
+	<ul class="nav nav-underline" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="fub-tab" data-bs-toggle="tab" data-bs-target="#fub-tab-pane" type="button"
+				role="tab" aria-controls="fub-tab-pane" aria-selected="true">
+				Subject Details
+			</button>
+		</li>
+	</ul>
+	
+	<div class="tab-content mt-3" id="myTabContent">
+		<div class="tab-pane fade show active" id="fub-tab-pane" role="tabpanel" aria-labelledby="fub-tab" tabindex="0">
+			<div class="mb-4">
+				<table class="table table-striped-columns">
+					<tbody>
+						@for (item of vApplicants; track $index) {
+							@if (itemID === item['id']) {
+								<applicant [data]="item" />
+							}
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</ng-template>
