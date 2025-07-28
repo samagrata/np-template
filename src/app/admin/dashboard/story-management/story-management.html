@@ -20,42 +20,42 @@
 <ng-template #cardFragment let-itemID="itemSN">
 	<ul class="nav nav-underline" id="myTab" role="tablist">
 		<li class="nav-item" role="presentation">
-			<button class="nav-link active" id="fub-tab-link" data-bs-toggle="tab" data-bs-target="#fub-tab-pane" type="button"
+			<button class="nav-link active" id="fub-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#fub-tab-pane-' + itemID" type="button"
 				role="tab" aria-controls="fub-tab-pane" aria-selected="true">
 				Paragraphs
 			</button>
 		</li>
 
 		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="fib-tab-link" data-bs-toggle="tab" data-bs-target="#fib-tab-pane" type="button"
+			<button class="nav-link" id="fib-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#fib-tab-pane-' + itemID" type="button"
 				role="tab" aria-controls="fib-tab-pane" aria-selected="true">
 				Carousel Images
 			</button>
 		</li>
 
 		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="fcb-tab-link" data-bs-toggle="tab" data-bs-target="#fcb-tab-pane" type="button"
+			<button class="nav-link" id="fcb-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#fcb-tab-pane-' + itemID" type="button"
 				role="tab" aria-controls="fcb-tab-pane" aria-selected="true">
 				Carousels (Similar Cases)
 			</button>
 		</li>
 
 		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="ffrb-tab-link" data-bs-toggle="tab" data-bs-target="#ffrb-tab-pane" type="button"
+			<button class="nav-link" id="ffrb-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#ffrb-tab-pane-' + itemID" type="button"
 				role="tab" aria-controls="ffrb-tab-pane" aria-selected="true">
 				Funds Received
 			</button>
 		</li>
 
 		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="ffub-tab-link" data-bs-toggle="tab" data-bs-target="#ffub-tab-pane" type="button"
+			<button class="nav-link" id="ffub-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#ffub-tab-pane-' + itemID" type="button"
 				role="tab" aria-controls="ffub-tab-pane" aria-selected="true">
 				Funds Used
 			</button>
 		</li>
 
 		<li class="nav-item" role="presentation">
-			<button class="nav-link" id="frb-tab-link" data-bs-toggle="tab" data-bs-target="#frb-tab-pane" type="button" role="tab"
+			<button class="nav-link" id="frb-tab-link" data-bs-toggle="tab" [attr.data-bs-target]="'#frb-tab-pane-' + itemID" type="button" role="tab"
 				aria-controls="frb-tab-pane" aria-selected="false">
 				Comments
 			</button>
@@ -63,7 +63,7 @@
 	</ul>
 	
 	<div class="tab-content mt-3" id="myTabContent">
-		<div class="tab-pane fade show active" id="fub-tab-pane" role="tabpanel" aria-labelledby="fub-tab" tabindex="0">
+		<div class="tab-pane fade show active" [id]="'fub-tab-pane-' + itemID" role="tabpanel" aria-labelledby="fub-tab" tabindex="0">
 			<div class="mb-4">
 				<div class="container">
 					@for (item of storyData[itemID-1].paragraphs; track $index; let i = $index) {
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 
-		<div class="tab-pane fade" id="fib-tab-pane" role="tabpanel" aria-labelledby="fib-tab" tabindex="0">
+		<div class="tab-pane fade" [id]="'fib-tab-pane-' + itemID" role="tabpanel" aria-labelledby="fib-tab" tabindex="0">
 			<div class="mb-4">
 				<div class="container">
 					@for (item of storyData[itemID-1].carouselImages; track $index; let i = $index) {
@@ -149,7 +149,7 @@
 			</div>
 		</div>
 
-		<div class="tab-pane fade" id="fcb-tab-pane" role="tabpanel" aria-labelledby="fcb-tab" tabindex="0">
+		<div class="tab-pane fade" [id]="'fcb-tab-pane-' + itemID" role="tabpanel" aria-labelledby="fcb-tab" tabindex="0">
 			<div class="mb-4">
 				<div class="container">
 					<div class="row table-header py-1 fw-bold border-bottom border-dark">
@@ -211,7 +211,7 @@
 			</div>
 		</div>
 
-		<div class="tab-pane fade" id="ffrb-tab-pane" role="tabpanel" aria-labelledby="ffrb-tab" tabindex="0">
+		<div class="tab-pane fade" [id]="'ffrb-tab-pane-' + itemID" role="tabpanel" aria-labelledby="ffrb-tab" tabindex="0">
 			<div class="mb-4">
 				<div class="container">
 					<div class="row py-1">
@@ -296,7 +296,7 @@
 			</div>
 		</div>
 
-		<div class="tab-pane fade" id="ffub-tab-pane" role="tabpanel" aria-labelledby="ffub-tab" tabindex="0">
+		<div class="tab-pane fade" [id]="'ffub-tab-pane-' + itemID" role="tabpanel" aria-labelledby="ffub-tab" tabindex="0">
 			<div class="mb-4">
 				<div class="container">
 					<div class="row">
@@ -375,7 +375,7 @@
                 <div class="row py-1 pt-2">
                   <div class="col">
                     <a [href]="b64ToImage(itemID-1)" target="_blank" rel="noreferrer noopener">
-                      <img [src]="b64ToImage(itemID-1)" alt="screenshot">
+                      <img class="img-fluid" [src]="b64ToImage(itemID-1)" alt="screenshot">
                     </a>
                   </div>
                 </div>
@@ -384,7 +384,7 @@
 							<div class="col">
                 <div>
                   <a [href]="b64ToImage(itemID-1)" target="_blank" rel="noreferrer noopener">
-                    <img [src]="b64ToImage(itemID-1)" alt="screenshot">
+                    <img class="img-fluid" [src]="b64ToImage(itemID-1)" alt="screenshot">
                   </a>
                 </div>
               </div>
@@ -394,7 +394,7 @@
 			</div>
 		</div>
 	
-		<div class="tab-pane fade" id="frb-tab-pane" role="tabpanel" aria-labelledby="frb-tab" tabindex="0">
+		<div class="tab-pane fade" [id]="'frb-tab-pane-' + itemID" role="tabpanel" aria-labelledby="frb-tab" tabindex="0">
 			<div class="mb-4">
 				<table class="table">
 					<thead>
