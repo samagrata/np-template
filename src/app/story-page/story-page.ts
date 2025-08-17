@@ -68,7 +68,7 @@ export class StoryPage {
             this.story = data;
           },
           error: (e: HttpErrorResponse ) => {
-            console.error("API error:", e.error);
+            console.error("API error:", e);
           },
           complete: () => null
         });

@@ -90,9 +90,9 @@ export class VolunteerDataService {
           if (typeof form != 'undefined') form.reset();
         },
         error: (e: HttpErrorResponse ) => {
-          console.error("API error:", e);
           noti.loadingMsg = '';
-          noti.errorMsg = e.error;
+          noti.errorMsg = e.error['message'];
+          console.error('API error:', e);
         },
         complete: () => null
       }

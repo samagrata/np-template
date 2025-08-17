@@ -43,7 +43,7 @@ export class StoryDataService {
         }
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
+        console.error("API error:", e);
       },
       complete: () => null
     });
@@ -93,9 +93,9 @@ export class StoryDataService {
         });
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     });
@@ -139,9 +139,9 @@ export class StoryDataService {
         // this.tableData[index]['editable'] = false;
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     });
@@ -163,9 +163,9 @@ export class StoryDataService {
         noti.successMsg = 'Item deleted!';
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     }).unsubscribe();
@@ -193,9 +193,9 @@ export class StoryDataService {
         rData = returnedComments;
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     });
@@ -218,9 +218,9 @@ export class StoryDataService {
         noti.successMsg = 'Updated!';
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     });

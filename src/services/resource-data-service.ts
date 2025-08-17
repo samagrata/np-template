@@ -144,7 +144,7 @@ export class ResourceDataService {
         }
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
+        console.error("API error:", e);
       },
       complete: () => null
     });
@@ -221,9 +221,9 @@ export class ResourceDataService {
           });
         },
         error: (e: HttpErrorResponse ) => {
-          console.error("API error:", e.error);
           noti.loadingMsg = '';
-          noti.errorMsg = e.error;
+          noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
         },
         complete: () => null
       }
@@ -267,9 +267,9 @@ export class ResourceDataService {
         this.tableData[index]['editable'] = false;
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     });
@@ -291,9 +291,9 @@ export class ResourceDataService {
         noti.successMsg = 'Item deleted!';
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => null
     }).unsubscribe();

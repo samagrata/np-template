@@ -59,11 +59,10 @@ export class AdminLogin {
           this.router.navigate([PathEnum.DB]);
         },
         error: (e: HttpErrorResponse ) => {
-          console.error("API error:", e);
           this.sessionService.removeItem('token');
           this.loginForm.reset();
           this.notifications.loadingMsg = '';
-          this.notifications.errorMsg = e.error;
+          this.notifications.errorMsg = e.error['message'];
           this.errorCode = e.status;
           this.unInputRef.nativeElement.focus();
           // this.router.navigate(

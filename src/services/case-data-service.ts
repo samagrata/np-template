@@ -135,7 +135,7 @@ export class CaseDataService {
         }
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
+        console.error("API error:", e);
       },
       complete: () => this.isComplete = true
     });
@@ -164,7 +164,7 @@ export class CaseDataService {
         this.caseData = data;
       },
       error: (e: HttpErrorResponse ) => {
-        console.error("API error:", e.error);
+        console.error("API error:", e);
       },
       complete: () => this.isComplete = true
     });
@@ -227,9 +227,9 @@ export class CaseDataService {
           });
         },
         error: (e: HttpErrorResponse ) => {
-          console.error("API error:", e.error);
           noti.loadingMsg = '';
-          noti.errorMsg = e.error;
+          noti.errorMsg = e.error['message'];
+          console.error("API error:", e);
         },
         complete: () => this.isComplete = true
       }
@@ -269,9 +269,9 @@ export class CaseDataService {
         this.tableData[index]['editable'] = false;
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => this.isComplete = true
     });
@@ -294,9 +294,9 @@ export class CaseDataService {
         noti.successMsg = 'Item deleted!';
       },
       error: (e: HttpErrorResponse ) => {
-        console.error('API error:', e.error);
         noti.loadingMsg = '';
-        noti.errorMsg = e.error;
+        noti.errorMsg = e.error['message'];
+        console.error('API error:', e);
       },
       complete: () => this.isComplete = true
     }).unsubscribe();
